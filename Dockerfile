@@ -109,11 +109,17 @@ RUN python3 download.py
 RUN wget https://render.otoy.com/downloads/a/61/2d40eddf-65a5-4c96-bc10-ab527f31dbee/OctaneBench_2020_1_5_linux.zip
 
 RUN unzip OctaneBench_2020_1_5_linux.zip
-
+RUN apt-get install -y sysbench
 
 COPY api/octane.sh .
 COPY api/start.sh .
 COPY api/smi.sh .
+COPY api/utilization.sh .
+COPY api/stress.py .
+COPY api/plot.py .
+COPY api/run.py .
+
+
 
 
 ARG SAFETENSORS_FAST_GPU=1
