@@ -120,6 +120,11 @@ COPY api/plot.py .
 COPY api/run.py .
 
 
+ENV sleep 120
+ENV sleep2 0
+ENV octane 1
+ENV cpu 1
+ENV loops 1
 
 
 ARG SAFETENSORS_FAST_GPU=1
