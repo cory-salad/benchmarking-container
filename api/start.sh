@@ -1,12 +1,9 @@
 #!/bin/bash
 begin=`date +%s`
-bash smi.sh &
-bash utilization.sh &
+#bash smi.sh &
+#bash utilization.sh &
 
 nvidiaout=$(nvidia-smi --query-gpu=timestamp,name,pci.bus_id,driver_version,pstate,pcie.link.gen.max,pcie.link.gen.current,temperature.gpu,utilization.gpu,utilization.memory,enforced.power.limit,power.max_limit,memory.total,memory.free,memory.used --format=csv,noheader)
-
-
-
 
 #main loop
 #for ((i = 0 ; i < $loops ; i++)); do
@@ -28,16 +25,17 @@ else
     echo -e "\n $(date -u +'%Y/%m/%d %H:%M:%S:%3N'), BENCHMARK: skipping CPU"
 fi
 
-
 #octane
 if [ $octane = '1' ]; then
-  echo "\n $(date -u +'%Y/%m/%d %H:%M:%S:%3N'), BENCHMARK: octane download starting"
-  start=`date +%s`
-  wget -q https://render.otoy.com/downloads/a/61/2d40eddf-65a5-4c96-bc10-ab527f31dbee/OctaneBench_2020_1_5_linux.zip
-  end=`date +%s`
-  runtime=$((end-start))
-  #echo "\n$runtime"
-  echo -e "\n $(date -u +'%Y/%m/%d %H:%M:%S:%3N'), BENCHMARK: octane download done, $runtime seconds to complete"
+
+  echo "\n $(date -u +'%Y/%m/%d %H:%M:%S:%3N'), BENCHMARK: octane starting"
+  #echo "\n $(date -u +'%Y/%m/%d %H:%M:%S:%3N'), BENCHMARK: octane download starting"
+  #start=`date +%s`
+  #wget -q https://render.otoy.com/downloads/a/61/2d40eddf-65a5-4c96-bc10-ab527f31dbee/OctaneBench_2020_1_5_linux.zip
+  #end=`date +%s`
+  #runtime=$((end-start))
+  ##echo "\n$runtime"
+  #echo -e "\n $(date -u +'%Y/%m/%d %H:%M:%S:%3N'), BENCHMARK: octane download done, $runtime seconds to complete"
   start1=`date +%s`
   bash octane.sh > octaneoutput.log
   end1=`date +%s`
@@ -49,6 +47,8 @@ if [ $octane = '1' ]; then
 else
   echo -e "\n $(date -u +'%Y/%m/%d %H:%M:%S:%3N'), BENCHMARK: skipping octane"
 fi
+
+sleep $sleep
 
 #SD
 echo -e "\n $(date -u +'%Y/%m/%d %H:%M:%S:%3N'), BENCHMARK: Stable Diffusion server starting"
@@ -212,9 +212,6 @@ echo $sd5score
 sd5sanitised=$(echo $sd5score | sed 's/[^0-9]*//g')
 echo $sd5sanitised
 
-
-
-
 #finishing
 echo -e "\n $(date -u +'%Y/%m/%d %H:%M:%S:%3N'), BENCHMARK: sleeping for $sleep2 seconds"
 sleep $sleep2
@@ -224,9 +221,10 @@ end=`date +%s`
 total=$((end-begin))
 echo -e "\n $(date -u +'%Y/%m/%d %H:%M:%S:%3N'), BENCHMARK: $total seconds to complete this entire benchmark container. $loops total loops."
 
-
-
 echo "NCW BENCHMARK RESULTS, $nvidiaout, $sd1sanitised, $sd2sanitised, $sd3sanitised, $sd4sanitised, $sd5sanitised, $octanescore"
 
 # date, tag, total time for SD, total time for SD after first, octane benchmark, first sample gpu %, first sample VRAM %, driver version, card, machine ID
 echo -e "\n NCW BENCHMARK RESULTS, $nvidiaout, $sd1sanitised, $sd2sanitised, $sd3sanitised, $sd4sanitised, $sd5sanitised,$octanescore"
+
+#for logging
+sleep 10 

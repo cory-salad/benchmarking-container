@@ -91,7 +91,6 @@ COPY api/train_dreambooth.py .
 EXPOSE 50150
 
 
-
 ARG MODEL_ID="runwayml/stable-diffusion-v1-5"
 ENV MODEL_ID=${MODEL_ID}
 ARG HF_MODEL_ID=""
@@ -101,14 +100,12 @@ ENV MODEL_PRECISION=${MODEL_PRECISION}
 ARG MODEL_REVISION=""
 ENV MODEL_REVISION=${MODEL_REVISION}
 
-
 ENV RUNTIME_DOWNLOADS=0
 RUN python3 download.py
 
-
-RUN wget https://render.otoy.com/downloads/a/61/2d40eddf-65a5-4c96-bc10-ab527f31dbee/OctaneBench_2020_1_5_linux.zip
-
-RUN unzip OctaneBench_2020_1_5_linux.zip
+RUN wget https://render.otoy.com/downloads/a/61/2d40eddf-65a5-4c96-bc10-ab527f31dbee/OctaneBench_2020_1_5_linux.zip; \
+ unzip OctaneBench_2020_1_5_linux.zip; \
+ rm OctaneBench_2020_1_5_linux.zip 
 RUN apt-get install -y sysbench
 
 COPY api/octane.sh .
@@ -119,16 +116,13 @@ COPY api/stress.py .
 COPY api/plot.py .
 COPY api/run.py .
 
-
-ENV sleep 120
-ENV sleep2 0
-ENV octane 1
-ENV cpu 1
-ENV loops 1
-
+ENV sleep=10 \
+ sleep2=0 \
+ octane=1 \
+ cpu=0 \
+ loops=1
 
 ARG SAFETENSORS_FAST_GPU=1
 ENV SAFETENSORS_FAST_GPU=${SAFETENSORS_FAST_GPU}
 
-CMD bash start.sh
-
+CMD ./start.sh
